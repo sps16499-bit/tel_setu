@@ -1,0 +1,93 @@
+{
+  "_comment": "Sample records showing the exact document shape stored in the 'vendors' and 'pickups' collections. Use these to test the app's rendering logic or to seed a local/offline copy without needing to register real shops first.",
+
+  "vendors": [
+    {
+      "id": "v_sample01",
+      "code": "TS-K7M2",
+      "shop": "Maa Sharda Dhaba",
+      "owner": "Suresh Yadav",
+      "phone": "9876543210",
+      "area": "Pandri",
+      "address": "Shop 14, near Pandri bus stand, opposite SBI ATM",
+      "weekly": 10,
+      "createdAt": "2026-09-01T05:12:00.000Z"
+    },
+    {
+      "id": "v_sample02",
+      "code": "TS-P9X4",
+      "shop": "New Punjab Rasoi",
+      "owner": "Jasbir Singh",
+      "phone": "9123456780",
+      "area": "GE Road",
+      "address": "Plot 22, GE Road, next to Bajaj showroom",
+      "weekly": 6,
+      "createdAt": "2026-09-02T09:40:00.000Z"
+    },
+    {
+      "id": "v_sample03",
+      "code": "TS-B3L8",
+      "shop": "Annapurna Bhojnalay",
+      "owner": "Rekha Devi",
+      "phone": "9988776655",
+      "area": "Tatibandh",
+      "address": "Near Tatibandh chowk, behind petrol pump",
+      "weekly": 9,
+      "createdAt": "2026-09-03T11:05:00.000Z"
+    }
+  ],
+
+  "pickups": [
+    {
+      "id": "p_sample01",
+      "vendorId": "v_sample01",
+      "shop": "Maa Sharda Dhaba",
+      "area": "Pandri",
+      "address": "Shop 14, near Pandri bus stand, opposite SBI ATM",
+      "litresEst": 10,
+      "litresActual": 11,
+      "quality": "good",
+      "rate": 28,
+      "payout": 308,
+      "status": "paid",
+      "note": "",
+      "requestedAt": "2026-09-10T04:30:00.000Z",
+      "collectedAt": "2026-09-10T10:15:00.000Z",
+      "paidAt": "2026-09-10T10:16:00.000Z"
+    },
+    {
+      "id": "p_sample02",
+      "vendorId": "v_sample02",
+      "shop": "New Punjab Rasoi",
+      "area": "GE Road",
+      "address": "Plot 22, GE Road, next to Bajaj showroom",
+      "litresEst": 6,
+      "litresActual": 5.5,
+      "quality": "medium",
+      "rate": 24,
+      "payout": 132,
+      "status": "collected",
+      "note": "Come after 4pm",
+      "requestedAt": "2026-09-11T06:00:00.000Z",
+      "collectedAt": "2026-09-11T11:20:00.000Z",
+      "paidAt": null
+    },
+    {
+      "id": "p_sample03",
+      "vendorId": "v_sample03",
+      "shop": "Annapurna Bhojnalay",
+      "area": "Tatibandh",
+      "address": "Near Tatibandh chowk, behind petrol pump",
+      "litresEst": 9,
+      "litresActual": null,
+      "quality": null,
+      "rate": null,
+      "payout": null,
+      "status": "requested",
+      "note": "",
+      "requestedAt": "2026-09-13T07:45:00.000Z",
+      "collectedAt": null,
+      "paidAt": null
+    }
+  ]
+}

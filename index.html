@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tel Setu — Live Collection Network</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #EDEEE1;
+    --card: #FFFFFF;
+    --soft: #F6F7EC;
+    --ink: #16241F;
+    --dim: #4B584F;
+    --line: #D7D8C7;
+    --amber: #B9791E;
+    --amber-bg: #F4E6CB;
+    --teal: #1F6F5C;
+    --teal-bg: #DCEBE5;
+    --rust: #A6402B;
+    --rust-bg: #F3DFD8;
+    --blue: #2B5579;
+    --blue-bg: #DDE7F0;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --bg: #0E1512; --card: #16211C; --soft: #1B2721; --ink: #EDEEE1; --dim: #A7B3AB;
+      --line: #2A362F; --amber: #D99A3C; --amber-bg: #33291A; --teal: #4CB89B; --teal-bg: #16302A;
+      --rust: #D9694F; --rust-bg: #34201C; --blue: #7FA8CC; --blue-bg: #1B2733;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1512; --card: #16211C; --soft: #1B2721; --ink: #EDEEE1; --dim: #A7B3AB;
+    --line: #2A362F; --amber: #D99A3C; --amber-bg: #33291A; --teal: #4CB89B; --teal-bg: #16302A;
+    --rust: #D9694F; --rust-bg: #34201C; --blue: #7FA8CC; --blue-bg: #1B2733;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  html, body { margin:0; padding:0; background: var(--bg); color: var(--ink);
+    font-family:'IBM Plex Sans', system-ui, -apple-system, sans-serif; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 18px 80px; }
+
+  header.top { border-bottom:1px solid var(--line); padding-top:24px; }
+  .brandline { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .brandline h1 { font-family:'Fraunces',serif; font-weight:600; font-size:25px; margin:0; letter-spacing:-.01em; }
+  .brandline .hi { font-family:'Fraunces',serif; font-size:16px; color:var(--amber); }
+  .sub { font-size:13px; color:var(--dim); margin:6px 0 16px; line-height:1.5; }
+  #conn { font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:20px; background:var(--soft); color:var(--dim); }
+  #conn.live { background:var(--teal-bg); color:var(--teal); }
+  #conn.off { background:var(--rust-bg); color:var(--rust); }
+
+  nav.tabs { display:flex; gap:2px; overflow-x:auto; }
+  nav.tabs button { font-family:inherit; font-size:14px; font-weight:500; background:none; border:none;
+    border-bottom:2px solid transparent; padding:11px 15px 13px; cursor:pointer; color:var(--dim); white-space:nowrap; }
+  nav.tabs button:hover { color:var(--ink); }
+  nav.tabs button.active { color:var(--ink); border-bottom-color:var(--amber); }
+
+  main { padding-top:24px; }
+  .view { display:none; }
+  .view.active { display:block; }
+
+  h2.st { font-family:'Fraunces',serif; font-weight:600; font-size:20px; margin:0 0 3px; }
+  p.ss { color:var(--dim); font-size:13px; margin:0 0 18px; max-width:560px; line-height:1.5; }
+
+  .panel { background:var(--card); border:1px solid var(--line); padding:20px; margin-bottom:16px; border-radius:4px; }
+  .ptitle { font-weight:600; font-size:14px; margin:0 0 15px; }
+
+  .field { margin-bottom:13px; }
+  .field label { display:block; font-size:12.5px; font-weight:500; color:var(--dim); margin-bottom:5px; }
+  .field input, .field select, .field textarea {
+    width:100%; font-family:inherit; font-size:14px; padding:10px 11px;
+    border:1px solid var(--line); background:var(--soft); color:var(--ink); border-radius:3px; }
+  .field textarea { resize:vertical; min-height:62px; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline:2px solid var(--teal); outline-offset:-1px; }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+  .row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:13px; }
+
+  button.btn { font-family:inherit; font-size:13.5px; font-weight:600; padding:11px 18px; border:none;
+    border-radius:3px; cursor:pointer; background:var(--teal); color:#fff; }
+  button.btn:hover { filter:brightness(1.08); }
+  button.btn:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
+  button.btn:disabled { opacity:.5; cursor:not-allowed; }
+  button.btn.amber { background:var(--amber); }
+  button.btn.ghost { background:none; color:var(--ink); border:1px solid var(--line); }
+  button.btn.sm { padding:7px 12px; font-size:12.5px; }
+
+  .rowitem { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:start;
+    padding:13px 0; border-bottom:1px solid var(--line); }
+  .rowitem:last-child { border-bottom:none; }
+  .rowitem .nm { font-weight:600; font-size:14px; }
+  .rowitem .mt { font-size:12.5px; color:var(--dim); margin-top:3px; line-height:1.5; }
+  .rowitem .actions { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+
+  .pill { display:inline-block; font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px; white-space:nowrap; }
+  .pill.good{background:var(--teal-bg);color:var(--teal)} .pill.medium{background:var(--amber-bg);color:var(--amber)}
+  .pill.poor{background:var(--rust-bg);color:var(--rust)}
+  .pill.requested{background:var(--blue-bg);color:var(--blue)} .pill.collected{background:var(--amber-bg);color:var(--amber)}
+  .pill.paid{background:var(--teal-bg);color:var(--teal)}
+
+  .empty { padding:26px 10px; text-align:center; color:var(--dim); font-size:13.5px; border:1px dashed var(--line); border-radius:4px; }
+
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line);
+    border:1px solid var(--line); margin-bottom:16px; border-radius:4px; overflow:hidden; }
+  .stat { background:var(--card); padding:18px 16px; }
+  .stat .n { font-family:'Fraunces',serif; font-weight:600; font-size:27px; line-height:1; margin-bottom:5px; }
+  .stat .l { font-size:11.5px; color:var(--dim); }
+  .stat.a .n{color:var(--amber)} .stat.t .n{color:var(--teal)}
+
+  .note { font-size:12px; color:var(--dim); line-height:1.6; }
+  .code { font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--soft);
+    padding:3px 8px; border-radius:3px; border:1px solid var(--line); }
+  .banner { padding:12px 14px; border-radius:4px; font-size:13px; line-height:1.5;
+    background:var(--amber-bg); color:var(--ink); margin-bottom:16px; border:1px solid var(--line); }
+  .tblwrap { overflow-x:auto; }
+  @media (max-width:720px){ .row2,.row3{grid-template-columns:1fr} .stats{grid-template-columns:1fr 1fr} }
+  ::selection { background: var(--amber-bg); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brandline">
+      <h1>Tel Setu</h1><span class="hi">तेल सेतु</span>
+      <span id="conn">connecting…</span>
+    </div>
+    <p class="sub">Used cooking oil collection network — vendor registration, quality-graded pickups, and payouts, shared live between the vendor and the operator.</p>
+    <nav class="tabs">
+      <button class="tb active" data-v="vendor">Vendor</button>
+      <button class="tb" data-v="ops">Operator</button>
+      <button class="tb" data-v="dash">Dashboard</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============ VENDOR ============ -->
+    <section class="view active" id="v-vendor">
+      <div id="vendor-unreg">
+        <h2 class="st">Register your shop</h2>
+        <p class="ss">One-time registration. You get a vendor code — use it on any device to see your pickups and payouts.</p>
+        <div class="panel">
+          <div class="row2">
+            <div class="field"><label for="f-shop">Shop / dhaba name</label><input id="f-shop" placeholder="Shree Balaji Dhaba"></div>
+            <div class="field"><label for="f-owner">Owner name</label><input id="f-owner" placeholder="Ramesh Sahu"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="f-phone">Phone number</label><input id="f-phone" inputmode="numeric" placeholder="98xxxxxxxx"></div>
+            <div class="field"><label for="f-area">Area</label>
+              <select id="f-area">
+                <option>Pandri</option><option>Tatibandh</option><option>GE Road</option>
+                <option>Shankar Nagar</option><option>Telibandha</option><option>Devendra Nagar</option>
+                <option>Kota</option><option>Mowa</option>
+              </select></div>
+          </div>
+          <div class="field"><label for="f-addr">Pickup location (landmark / full address)</label>
+            <textarea id="f-addr" placeholder="Shop 14, near Pandri bus stand, opposite SBI ATM"></textarea></div>
+          <div class="field"><label for="f-week">Typical used oil per week (litres)</label>
+            <input id="f-week" type="number" min="1" step="0.5" placeholder="8"></div>
+          <button class="btn amber" id="btn-register">Register shop</button>
+          <p class="note" style="margin-top:12px">Already registered? <a href="#" id="link-code">Enter your vendor code</a></p>
+        </div>
+      </div>
+
+      <div id="vendor-home" style="display:none">
+        <h2 class="st" id="vh-name">—</h2>
+        <p class="ss" id="vh-meta">—</p>
+
+        <div class="stats">
+          <div class="stat t"><div class="n" id="vs-litres">0</div><div class="l">Litres collected</div></div>
+          <div class="stat a"><div class="n" id="vs-earned">₹0</div><div class="l">Total earned</div></div>
+          <div class="stat"><div class="n" id="vs-due">₹0</div><div class="l">Payment pending</div></div>
+          <div class="stat"><div class="n" id="vs-count">0</div><div class="l">Pickups done</div></div>
+        </div>
+
+        <div class="panel">
+          <p class="ptitle">Request a pickup</p>
+          <div class="row2">
+            <div class="field"><label for="r-litres">Oil ready for pickup (litres)</label>
+              <input id="r-litres" type="number" min="1" step="0.5" placeholder="8"></div>
+            <div class="field"><label for="r-note">Note for collector (optional)</label>
+              <input id="r-note" placeholder="Come after 4pm"></div>
+          </div>
+          <button class="btn amber" id="btn-request">Request pickup</button>
+        </div>
+
+        <div class="panel">
+          <p class="ptitle">My pickups and payouts</p>
+          <div id="vendor-list"></div>
+        </div>
+
+        <p class="note">Your vendor code: <span class="code" id="vh-code">—</span> &nbsp;·&nbsp;
+          <a href="#" id="link-switch">switch shop</a></p>
+      </div>
+
+      <div id="vendor-login" style="display:none">
+        <h2 class="st">Enter your vendor code</h2>
+        <p class="ss">The code you were given when your shop was registered.</p>
+        <div class="panel">
+          <div class="field"><label for="f-code">Vendor code</label><input id="f-code" placeholder="TS-XXXX"></div>
+          <button class="btn" id="btn-login">Open my shop</button>
+          <button class="btn ghost" id="btn-backreg" style="margin-left:8px">Register instead</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ OPERATOR ============ -->
+    <section class="view" id="v-ops">
+      <h2 class="st">Pickup queue</h2>
+      <p class="ss">Open requests grouped by area, so several small stops make one viable route. Log litres and oil grade at the point of collection.</p>
+      <div class="panel"><div id="ops-queue"></div></div>
+
+      <h2 class="st" style="margin-top:26px">Collected — awaiting payment</h2>
+      <p class="ss">Mark paid once the vendor has been handed their payout.</p>
+      <div class="panel"><div id="ops-unpaid"></div></div>
+
+      <h2 class="st" style="margin-top:26px">Registered vendors</h2>
+      <p class="ss">Every shop on the network, with its pickup location.</p>
+      <div class="panel"><div id="ops-vendors"></div></div>
+    </section>
+
+    <!-- ============ DASHBOARD ============ -->
+    <section class="view" id="v-dash">
+      <h2 class="st">Network overview</h2>
+      <p class="ss">Live traceability from collection point to biodiesel-ready feedstock.</p>
+
+      <div class="stats">
+        <div class="stat a"><div class="n" id="d-litres">0</div><div class="l">Litres collected</div></div>
+        <div class="stat"><div class="n" id="d-vendors">0</div><div class="l">Registered vendors</div></div>
+        <div class="stat t"><div class="n" id="d-paid">₹0</div><div class="l">Paid to vendors</div></div>
+        <div class="stat"><div class="n" id="d-diesel">0 L</div><div class="l">Diesel-equivalent offset</div></div>
+      </div>
+
+      <div class="panel">
+        <p class="ptitle">Oil quality mix</p>
+        <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;margin:8px 0 10px" id="qbar">
+          <div style="width:0;background:var(--teal)"></div><div style="width:0;background:var(--amber)"></div><div style="width:0;background:var(--rust)"></div>
+        </div>
+        <div style="display:flex;gap:16px;font-size:12px;color:var(--dim);flex-wrap:wrap" id="qkey"></div>
+      </div>
+
+      <div class="panel">
+        <p class="ptitle">Collection by area</p>
+        <div id="d-areas"></div>
+      </div>
+
+      <div class="panel">
+        <p class="ptitle">Collection ledger</p>
+        <div id="d-ledger"></div>
+      </div>
+
+      <div class="panel">
+        <p class="ptitle">Estimated biodiesel value</p>
+        <div style="font-family:'Fraunces',serif;font-weight:600;font-size:23px" id="d-value">₹0</div>
+        <p class="note" style="margin-top:6px">At roughly 90% conversion yield and an indicative ₹55 per litre B100 price to regional processors. Indicative only — not a booked sale.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var RATES = { good: 28, medium: 24, poor: 20 };
+  var AREAS = ["Pandri","Tatibandh","GE Road","Shankar Nagar","Telibandha","Devendra Nagar","Kota","Mowa"];
+
+  var db = null;
+  var vendors = [];   // {id, shop, owner, phone, area, address, weekly, code, createdAt}
+  var pickups = [];   // {id, vendorId, shop, area, address, litresEst, litresActual, quality, rate, payout, status, note, requestedAt, collectedAt, paidAt}
+  var myCode = null;
+
+  /* ---------- small helpers ---------- */
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { var d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; }
+  function inr(n) { return "\u20b9" + Math.round(n || 0).toLocaleString("en-IN"); }
+  function nowISO() { return new Date().toISOString(); }
+  function shortDate(iso) {
+    if (!iso) return "";
+    var d = new Date(iso);
+    if (isNaN(d)) return "";
+    return d.toLocaleDateString("en-IN", { day: "numeric", month: "short" }) + ", " +
+           d.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
+  }
+  function newCode() {
+    var s = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", out = "";
+    for (var i = 0; i < 4; i++) out += s[Math.floor(Math.random() * s.length)];
+    return "TS-" + out;
+  }
+  function newId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+
+  function setConn(state, text) {
+    var el = $("conn");
+    el.className = state;
+    el.textContent = text;
+  }
+
+  /* ---------- tabs ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".tb"), function (b) {
+    b.addEventListener("click", function () {
+      Array.prototype.forEach.call(document.querySelectorAll(".tb"), function (x) { x.classList.remove("active"); });
+      Array.prototype.forEach.call(document.querySelectorAll(".view"), function (x) { x.classList.remove("active"); });
+      b.classList.add("active");
+      $("v-" + b.dataset.v).classList.add("active");
+    });
+  });
+
+  /* ---------- writes ---------- */
+  var writeBlocked = false;
+  function writeFail(e) {
+    var code = e && e.code;
+    if (code === "invalid_argument" || code === "not_granted" || code === "revoked") {
+      writeBlocked = true;
+      setConn("off", "read-only");
+      alert("This view cannot save changes. You are signed in as a viewer rather than a participant.");
+    } else if (code === "quota_exceeded") {
+      alert("The network database is full. Old records need clearing before new ones can be added.");
+    } else {
+      alert("Could not save just now. Please check your connection and try again.");
+    }
+  }
+
+  function saveVendor(v) {
+    if (!db) { alert("Not connected to the shared network yet. Please wait a moment and try again."); return Promise.reject(); }
+    return db.doc("vendors/" + v.id).set(v).catch(function (e) { writeFail(e); throw e; });
+  }
+  function savePickup(p) {
+    if (!db) { alert("Not connected to the shared network yet. Please wait a moment and try again."); return Promise.reject(); }
+    return db.doc("pickups/" + p.id).set(p).catch(function (e) { writeFail(e); throw e; });
+  }
+
+  /* ---------- vendor identity ---------- */
+  function currentVendor() {
+    if (!myCode) return null;
+    for (var i = 0; i < vendors.length; i++) if (vendors[i].code === myCode) return vendors[i];
+    return null;
+  }
+
+  function showVendorScreen() {
+    var v = currentVendor();
+    if (myCode && !v && vendors.length === 0) {
+      // data may not have arrived yet — keep showing home shell
+    }
+    $("vendor-unreg").style.display = (!myCode) ? "block" : "none";
+    $("vendor-login").style.display = "none";
+    $("vendor-home").style.display = myCode ? "block" : "none";
+    if (v) renderVendorHome(v);
+  }
+
+  /* ---------- render: vendor home ---------- */
+  function renderVendorHome(v) {
+    $("vh-name").textContent = v.shop;
+    $("vh-meta").textContent = v.area + " \u00b7 " + v.address + (v.phone ? " \u00b7 " + v.phone : "");
+    $("vh-code").textContent = v.code;
+
+    var mine = pickups.filter(function (p) { return p.vendorId === v.id; })
+      .sort(function (a, b) { return (b.requestedAt || "").localeCompare(a.requestedAt || ""); });
+
+    var litres = 0, earned = 0, due = 0, done = 0;
+    mine.forEach(function (p) {
+      if (p.status === "collected" || p.status === "paid") { litres += p.litresActual || 0; done++; }
+      if (p.status === "paid") earned += p.payout || 0;
+      if (p.status === "collected") due += p.payout || 0;
+    });
+    $("vs-litres").textContent = litres.toFixed(litres % 1 ? 1 : 0);
+    $("vs-earned").textContent = inr(earned);
+    $("vs-due").textContent = inr(due);
+    $("vs-count").textContent = done;
+
+    var box = $("vendor-list");
+    if (!mine.length) { box.innerHTML = '<div class="empty">No pickups yet. Request one above when you have oil ready.</div>'; return; }
+    box.innerHTML = mine.map(function (p) {
+      var right = p.status === "requested"
+        ? '<span class="pill requested">Awaiting pickup</span>'
+        : '<span class="pill ' + p.status + '">' + (p.status === "paid" ? "Paid " + inr(p.payout) : "Collected \u00b7 " + inr(p.payout) + " due") + '</span>';
+      var detail = p.status === "requested"
+        ? "Requested " + shortDate(p.requestedAt) + " \u00b7 about " + p.litresEst + " L ready" + (p.note ? " \u00b7 " + esc(p.note) : "")
+        : p.litresActual + " L collected " + shortDate(p.collectedAt) + " \u00b7 grade " + p.quality + " at " + inr(p.rate) + "/L";
+      return '<div class="rowitem"><div><div class="nm">' + shortDate(p.requestedAt) +
+             '</div><div class="mt">' + detail + '</div></div><div class="actions">' + right + '</div></div>';
+    }).join("");
+  }
+
+  /* ---------- render: operator ---------- */
+  function renderOps() {
+    // queue
+    var q = pickups.filter(function (p) { return p.status === "requested"; })
+      .sort(function (a, b) { return (a.area || "").localeCompare(b.area || "") || (a.requestedAt || "").localeCompare(b.requestedAt || ""); });
+    var qb = $("ops-queue");
+    if (!q.length) qb.innerHTML = '<div class="empty">No open pickup requests.</div>';
+    else qb.innerHTML = q.map(function (p) {
+      return '<div class="rowitem"><div><div class="nm">' + esc(p.shop) + '</div><div class="mt">' +
+        esc(p.area) + " \u00b7 " + esc(p.address) + '<br>about ' + p.litresEst + ' L \u00b7 requested ' + shortDate(p.requestedAt) +
+        (p.note ? " \u00b7 " + esc(p.note) : "") +
+        '</div></div><div class="actions"><button class="btn sm" data-log="' + p.id + '">Log collection</button></div></div>';
+    }).join("");
+    Array.prototype.forEach.call(qb.querySelectorAll("[data-log]"), function (b) {
+      b.addEventListener("click", function () { logCollection(b.dataset.log); });
+    });
+
+    // unpaid
+    var u = pickups.filter(function (p) { return p.status === "collected"; })
+      .sort(function (a, b) { return (a.collectedAt || "").localeCompare(b.collectedAt || ""); });
+    var ub = $("ops-unpaid");
+    if (!u.length) ub.innerHTML = '<div class="empty">Nothing awaiting payment.</div>';
+    else ub.innerHTML = u.map(function (p) {
+      return '<div class="rowitem"><div><div class="nm">' + esc(p.shop) + " \u00b7 " + inr(p.payout) +
+        '</div><div class="mt">' + p.litresActual + ' L \u00b7 grade ' + p.quality + ' at ' + inr(p.rate) + '/L \u00b7 collected ' + shortDate(p.collectedAt) +
+        '</div></div><div class="actions"><span class="pill ' + p.quality + '">' + p.quality + '</span>' +
+        '<button class="btn sm" data-pay="' + p.id + '">Mark paid</button></div></div>';
+    }).join("");
+    Array.prototype.forEach.call(ub.querySelectorAll("[data-pay]"), function (b) {
+      b.addEventListener("click", function () { markPaid(b.dataset.pay); });
+    });
+
+    // vendors
+    var vb = $("ops-vendors");
+    if (!vendors.length) vb.innerHTML = '<div class="empty">No vendors registered yet.</div>';
+    else vb.innerHTML = vendors.slice().sort(function (a, b) { return (a.area || "").localeCompare(b.area || ""); })
+      .map(function (v) {
+        var tot = pickups.filter(function (p) { return p.vendorId === v.id && (p.status === "collected" || p.status === "paid"); })
+          .reduce(function (s, p) { return s + (p.litresActual || 0); }, 0);
+        return '<div class="rowitem"><div><div class="nm">' + esc(v.shop) + '</div><div class="mt">' +
+          esc(v.owner || "") + (v.phone ? " \u00b7 " + esc(v.phone) : "") + '<br>' + esc(v.area) + " \u00b7 " + esc(v.address) +
+          '<br>code ' + esc(v.code) + " \u00b7 " + tot + ' L collected to date</div></div><div class="actions"></div></div>';
+      }).join("");
+  }
+
+  function logCollection(id) {
+    var p = pickups.filter(function (x) { return x.id === id; })[0];
+    if (!p) return;
+    var a = prompt("Actual litres collected from " + p.shop + ":", p.litresEst);
+    if (a === null) return;
+    var litres = parseFloat(a);
+    if (!litres || litres <= 0) { alert("Enter a litre amount greater than zero."); return; }
+    var g = prompt("Oil grade from the TPC test strip — type good, medium or poor:", "good");
+    if (g === null) return;
+    g = String(g).toLowerCase().trim();
+    if (!RATES[g]) { alert("Grade must be good, medium or poor."); return; }
+    var next = Object.assign({}, p, {
+      litresActual: litres, quality: g, rate: RATES[g],
+      payout: Math.round(litres * RATES[g]), status: "collected", collectedAt: nowISO()
+    });
+    savePickup(next).catch(function () {});
+  }
+
+  function markPaid(id) {
+    var p = pickups.filter(function (x) { return x.id === id; })[0];
+    if (!p) return;
+    if (!confirm("Confirm " + inr(p.payout) + " has been paid to " + p.shop + "?")) return;
+    savePickup(Object.assign({}, p, { status: "paid", paidAt: nowISO() })).catch(function () {});
+  }
+
+  /* ---------- render: dashboard ---------- */
+  function renderDash() {
+    var done = pickups.filter(function (p) { return p.status === "collected" || p.status === "paid"; });
+    var litres = done.reduce(function (s, p) { return s + (p.litresActual || 0); }, 0);
+    var paid = pickups.filter(function (p) { return p.status === "paid"; }).reduce(function (s, p) { return s + (p.payout || 0); }, 0);
+
+    $("d-litres").textContent = litres.toFixed(litres % 1 ? 1 : 0);
+    $("d-vendors").textContent = vendors.length;
+    $("d-paid").textContent = inr(paid);
+    $("d-diesel").textContent = Math.round(litres * 0.9) + " L";
+    $("d-value").textContent = inr(litres * 0.9 * 55);
+
+    var g = 0, m = 0, p2 = 0;
+    done.forEach(function (p) {
+      if (p.quality === "good") g += p.litresActual || 0;
+      else if (p.quality === "medium") m += p.litresActual || 0;
+      else if (p.quality === "poor") p2 += p.litresActual || 0;
+    });
+    var tot = g + m + p2 || 1;
+    var bar = $("qbar");
+    bar.children[0].style.width = (g / tot * 100) + "%";
+    bar.children[1].style.width = (m / tot * 100) + "%";
+    bar.children[2].style.width = (p2 / tot * 100) + "%";
+    $("qkey").innerHTML =
+      '<span>Good \u00b7 ' + g.toFixed(g % 1 ? 1 : 0) + ' L</span>' +
+      '<span>Medium \u00b7 ' + m.toFixed(m % 1 ? 1 : 0) + ' L</span>' +
+      '<span>Poor \u00b7 ' + p2.toFixed(p2 % 1 ? 1 : 0) + ' L</span>';
+
+    var byArea = {};
+    done.forEach(function (p) { byArea[p.area] = (byArea[p.area] || 0) + (p.litresActual || 0); });
+    var arr = Object.keys(byArea).map(function (k) { return [k, byArea[k]]; })
+      .sort(function (a, b) { return b[1] - a[1]; });
+    var ab = $("d-areas");
+    if (!arr.length) ab.innerHTML = '<div class="empty">No collections logged yet.</div>';
+    else {
+      var max = arr[0][1] || 1;
+      ab.innerHTML = arr.map(function (r) {
+        return '<div style="display:flex;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px">' +
+          '<span style="min-width:120px">' + esc(r[0]) + '</span>' +
+          '<span style="flex:1;height:6px;background:var(--soft);margin:0 14px;border-radius:4px;overflow:hidden">' +
+          '<span style="display:block;height:100%;background:var(--teal);width:' + (r[1] / max * 100) + '%"></span></span>' +
+          '<span>' + r[1].toFixed(r[1] % 1 ? 1 : 0) + ' L</span></div>';
+      }).join("");
+    }
+
+    var led = done.slice().sort(function (a, b) { return (b.collectedAt || "").localeCompare(a.collectedAt || ""); });
+    var lb = $("d-ledger");
+    if (!led.length) lb.innerHTML = '<div class="empty">No collections logged yet.</div>';
+    else lb.innerHTML = led.map(function (p) {
+      return '<div class="rowitem"><div><div class="nm">' + esc(p.shop) + '</div><div class="mt">' +
+        esc(p.area) + " \u00b7 " + shortDate(p.collectedAt) + " \u00b7 " + inr(p.payout) + " \u00b7 " + p.status +
+        '</div></div><div class="actions"><span class="pill ' + p.quality + '">' + p.quality + '</span>' +
+        '<span style="font-weight:600;font-size:13.5px">' + p.litresActual + ' L</span></div></div>';
+    }).join("");
+  }
+
+  function renderAll() {
+    showVendorScreen();
+    renderOps();
+    renderDash();
+  }
+
+  /* ---------- form actions ---------- */
+  $("btn-register").addEventListener("click", function () {
+    var shop = $("f-shop").value.trim();
+    var owner = $("f-owner").value.trim();
+    var phone = $("f-phone").value.trim();
+    var area = $("f-area").value;
+    var addr = $("f-addr").value.trim();
+    var weekly = parseFloat($("f-week").value);
+    if (!shop) { alert("Please enter the shop name."); return; }
+    if (!addr) { alert("Please enter the pickup location so a collector can find you."); return; }
+    var v = {
+      id: newId(), code: newCode(), shop: shop, owner: owner, phone: phone,
+      area: area, address: addr, weekly: isNaN(weekly) ? null : weekly, createdAt: nowISO()
+    };
+    var btn = this; btn.disabled = true;
+    saveVendor(v).then(function () {
+      myCode = v.code; lsSet("telsetu_code", myCode);
+      $("f-shop").value = ""; $("f-owner").value = ""; $("f-phone").value = ""; $("f-addr").value = ""; $("f-week").value = "";
+      alert("Registered. Your vendor code is " + v.code + " — keep it to open your shop on any device.");
+      renderAll();
+    }).catch(function () {}).then(function () { btn.disabled = false; });
+  });
+
+  $("btn-request").addEventListener("click", function () {
+    var v = currentVendor();
+    if (!v) { alert("Register your shop first."); return; }
+    var litres = parseFloat($("r-litres").value);
+    if (!litres || litres <= 0) { alert("Enter how many litres are ready for pickup."); return; }
+    var p = {
+      id: newId(), vendorId: v.id, shop: v.shop, area: v.area, address: v.address,
+      litresEst: litres, litresActual: null, quality: null, rate: null, payout: null,
+      status: "requested", note: $("r-note").value.trim(), requestedAt: nowISO(),
+      collectedAt: null, paidAt: null
+    };
+    var btn = this; btn.disabled = true;
+    savePickup(p).then(function () {
+      $("r-litres").value = ""; $("r-note").value = "";
+      renderAll();
+    }).catch(function () {}).then(function () { btn.disabled = false; });
+  });
+
+  $("link-code").addEventListener("click", function (e) {
+    e.preventDefault();
+    $("vendor-unreg").style.display = "none";
+    $("vendor-home").style.display = "none";
+    $("vendor-login").style.display = "block";
+  });
+  $("btn-backreg").addEventListener("click", function () {
+    $("vendor-login").style.display = "none";
+    $("vendor-unreg").style.display = "block";
+  });
+  $("btn-login").addEventListener("click", function () {
+    var c = $("f-code").value.trim().toUpperCase();
+    var found = vendors.filter(function (v) { return v.code === c; })[0];
+    if (!found) { alert("No shop found with that code. Check the code, or register a new shop."); return; }
+    myCode = c; lsSet("telsetu_code", c);
+    $("f-code").value = "";
+    renderAll();
+  });
+  $("link-switch").addEventListener("click", function (e) {
+    e.preventDefault(); myCode = null; lsDel("telsetu_code"); renderAll();
+  });
+
+  /* ---------- boot ---------- */
+  myCode = lsGet("telsetu_code");
+  renderAll();
+
+  if (!window.claude || !window.claude.use) {
+    setConn("off", "offline preview");
+  } else {
+    window.claude.use("db").then(function (store) {
+      if (!store) { setConn("off", "offline preview"); return; }
+      db = store;
+      setConn("live", "live");
+
+      db.collection("vendors").onSnapshot(function (snap) {
+        vendors = snap.docs.map(function (d) {
+          var o = Object.assign({}, d.data()); o.id = d.id; return o;
+        });
+        renderAll();
+      }, function (e) { setConn("off", "sync stopped"); });
+
+      db.collection("pickups").onSnapshot(function (snap) {
+        pickups = snap.docs.map(function (d) {
+          var o = Object.assign({}, d.data()); o.id = d.id; return o;
+        });
+        renderAll();
+      }, function (e) { setConn("off", "sync stopped"); });
+    }).catch(function () { setConn("off", "offline preview"); });
+  }
+})();
+</script>
+</body>
+</html>
