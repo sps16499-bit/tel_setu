@@ -86,4 +86,4 @@ MIT — see [`LICENSE`](./LICENSE).
 
 ## Team
 
-[Team name] — Hack for a Social Cause, VBYLD 2027, State: Chhattisgarh
+TEL SETU — Hack for a Social Cause, VBYLD 2027, State: Chhattisgarh
