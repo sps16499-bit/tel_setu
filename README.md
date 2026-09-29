@@ -86,4 +86,8 @@ MIT — see [`LICENSE`](./LICENSE).
 
 ## Team
 
-TEL SETU — Hack for a Social Cause, VBYLD 2027, State: Chhattisgarh
+TEL SETU — Hack for a Social Cause, VBYLD 2027, State: Maharashtra
+Piloted in Chhattisgarh (Raipur) — the Team Lead's home state, where the gap was identified firsthand. The collection-network model is directly replicable in Maharashtra's own tier-2/3 towns, which face the identical FSSAI RUCO coverage gap.
+
+Team Lead: Shrish Pratap Singh — National Insurance Academy, Pune
+Registration ID: HSC|MH|00047
